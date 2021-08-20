@@ -69,14 +69,17 @@ while read isotope decays; do
         rm $g4_macro_file_path
     fi
 
+    date; sleep 2
     time python ${PY_MACRO} $isotope $decays $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $decays + $counter`) >> $g4_macro_file_path
-    sleep 2
+    date; sleep 2
     time ${G4_BIN} $g4_macro_file_path
-    sleep 2
+    date; sleep 2
     time ${RTD_BIN} $g4_file_path $rtd_file_path
-    sleep 2
-    "time root -l -b -q '${SLIMMER}("\"$rtd_file_path"\", "\"$slim_file_path"\")'"
+    date; sleep 2
+    time root -l -b -q ''${SLIMMER}'("'$rtd_file_path'", "'$slim_file_path'")'
+    date; sleep 2
     mv $slim_file_path $output_file_path
+    date; sleep 2
 
 done <<< "$tuple"
 
