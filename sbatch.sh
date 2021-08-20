@@ -59,12 +59,6 @@ while read isotope decays; do
         mkdir -p $output_file_path
     fi
 
-    # ls $g4_macro_file_path
-    # ls $g4_file_path
-    # ls $rtd_file_path
-    # ls $slim_file_path
-    # ls $output_file_path
-
     if [ -f "$g4_macro_file_path" ]; then
         rm $g4_macro_file_path
     fi
