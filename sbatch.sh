@@ -74,6 +74,8 @@ while read isotope decays; do
     date; sleep 2
     mv $slim_file_path $output_file_path
     date; sleep 2
+    rm $g4_file_path
+    date; sleep 2
 
 done <<< "$tuple"
 
