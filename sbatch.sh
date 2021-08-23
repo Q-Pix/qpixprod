@@ -6,8 +6,8 @@
 #SBATCH -p guenette         # Partition
 #SBATCH --mem 1000          # Memory request (Mb)
 #SBATCH -t 0-6:00           # Maximum execution time (D-HH:MM)
-#SBATCH -o %A_%a.out        # Standard output
-#SBATCH -e %A_%a.err        # Standard error
+#SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.out        # Standard output
+#SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.err        # Standard error
 
 SCRATCH_DIR="/n/holyscratch01/guenette_lab/Users/jh/supernova"
 STORE_DIR="/n/holystore01/LABS/guenette_lab/Lab/data/q-pix/supernova"
@@ -75,6 +75,8 @@ while read isotope decays; do
     mv $slim_file_path $output_file_path
     date; sleep 2
     rm $g4_file_path
+    date; sleep 2
+    rm $rtd_file_path
     date; sleep 2
 
 done <<< "$tuple"
