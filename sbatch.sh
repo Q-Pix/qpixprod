@@ -5,7 +5,7 @@
 #SBATCH -N 1                # All cores on one machine
 #SBATCH -p guenette         # Partition
 #SBATCH --mem 1000          # Memory request (Mb)
-#SBATCH -t 0-6:00           # Maximum execution time (D-HH:MM)
+#SBATCH -t 0-2:00           # Maximum execution time (D-HH:MM)
 #SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.out        # Standard output
 #SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.err        # Standard error
 
