@@ -9,6 +9,8 @@
 #SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.out        # Standard output
 #SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.err        # Standard error
 
+offset=0
+
 SCRATCH_DIR="/n/holyscratch01/guenette_lab/Users/jh/supernova"
 STORE_DIR="/n/holystore01/LABS/guenette_lab/Lab/data/q-pix/supernova"
 G4_MACRO_DIR="${SCRATCH_DIR}/macros"
@@ -42,7 +44,9 @@ while read isotope decays; do
 
     echo "isotope: '$isotope', decays: '$decays'"
 
-    index=$(printf "%06d" "${SLURM_ARRAY_TASK_ID}")
+    # index=$(printf "%06d" "${SLURM_ARRAY_TASK_ID}")
+    index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
+    index=$(printf "%06d" "$index")
 
     g4_macro_file_name="$isotope"_g4_"$index".mac
     g4_file_name="$isotope"_g4_"$index".root
