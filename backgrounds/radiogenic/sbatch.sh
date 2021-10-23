@@ -19,7 +19,7 @@ RTD_OUTPUT_DIR="${SCRATCH_DIR}/rtd"
 SLIM_OUTPUT_DIR="${SCRATCH_DIR}/slim"
 OUTPUT_DIR="${STORE_DIR}/production"
 
-PY_MACRO=/n/home02/jh/repos/qpixprod/generate_macro.py
+PY_MACRO=/n/home02/jh/repos/qpixprod/backgrounds/radiogenic/generate_macro.py
 G4_BIN=/n/home02/jh/repos/qpixg4/build/app/G4_QPIX
 RTD_BIN=/n/home02/jh/repos/qpixrtd/EXAMPLE/build/EXAMPLE
 SLIMMER=/n/home02/jh/repos/qpixrtd/EXAMPLE/slimmer.c
