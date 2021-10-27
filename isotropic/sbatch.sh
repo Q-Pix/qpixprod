@@ -43,66 +43,66 @@ counter=0
 
 while read neutrino th2; do
 
-  for reaction in $reactions
-  do
+    for reaction in $reactions
+    do
 
-    let counter++
+        let counter++
 
-    echo "neutrino: '$neutrino', th2: '$th2', reaction: '$reaction'"
+        echo "neutrino: '$neutrino', th2: '$th2', reaction: '$reaction'"
 
-    # index=$(printf "%06d" "${SLURM_ARRAY_TASK_ID}")
-    index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
-    index_lz=$(printf "%06d" "$index")
+        # index=$(printf "%06d" "${SLURM_ARRAY_TASK_ID}")
+        index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
+        index_lz=$(printf "%06d" "$index")
 
-    marley_config_file_name="$neutrino"_"$reaction"_marley_"$index_lz".cfg
-    g4_macro_file_name="$neutrino"_"$reaction"_g4_"$index_lz".mac
-    g4_file_name="$neutrino"_"$reaction"_g4_"$index_lz".root
-    rtd_file_name="$neutrino"_"$reaction"_rtd_"$index_lz".root
-    slim_file_name="$neutrino"_"$reaction"_rtd_slim_"$index_lz".root
+        marley_config_file_name="$neutrino"_"$reaction"_marley_"$index_lz".cfg
+        g4_macro_file_name="$neutrino"_"$reaction"_g4_"$index_lz".mac
+        g4_file_name="$neutrino"_"$reaction"_g4_"$index_lz".root
+        rtd_file_name="$neutrino"_"$reaction"_rtd_"$index_lz".root
+        slim_file_name="$neutrino"_"$reaction"_rtd_slim_"$index_lz".root
 
-    marley_config_file_path=${MARLEY_CONFIG_DIR}/$marley_config_file_name
-    g4_macro_file_path=${G4_MACRO_DIR}/$g4_macro_file_name
-    g4_file_path=${G4_OUTPUT_DIR}/$g4_file_name
-    rtd_file_path=${RTD_OUTPUT_DIR}/$rtd_file_name
-    slim_file_path=${SLIM_OUTPUT_DIR}/$slim_file_name
-    output_file_path=${OUTPUT_DIR}/"$neutrino"_"$reaction"/$index_lz
+        marley_config_file_path=${MARLEY_CONFIG_DIR}/$marley_config_file_name
+        g4_macro_file_path=${G4_MACRO_DIR}/$g4_macro_file_name
+        g4_file_path=${G4_OUTPUT_DIR}/$g4_file_name
+        rtd_file_path=${RTD_OUTPUT_DIR}/$rtd_file_name
+        slim_file_path=${SLIM_OUTPUT_DIR}/$slim_file_name
+        output_file_path=${OUTPUT_DIR}/"$neutrino"_"$reaction"/$index_lz
 
-    # if [ ! -d "$output_file_path" ]; then
-    #     mkdir -p $output_file_path
-    # fi
+        if [ ! -d "$output_file_path" ]; then
+            mkdir -p $output_file_path
+        fi
 
-    if [ -f "$marley_config_file_path" ]; then
-        rm $marley_config_file_path
-    fi
+        if [ -f "$marley_config_file_path" ]; then
+            rm $marley_config_file_path
+        fi
 
-    if [ -f "$g4_macro_file_path" ]; then
-        rm $g4_macro_file_path
-    fi
+        if [ -f "$g4_macro_file_path" ]; then
+            rm $g4_macro_file_path
+        fi
 
-    date; sleep 2
-    time python ${PY_CONFIG} --neutrino $neutrino --reaction $reaction --seed $index #>> $marley_config_file_path
-    date; sleep 2
-    # time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) --timing --th2 $th2 >> $g4_macro_file_path
-    time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) #>> $g4_macro_file_path
-    date; sleep 2
-    time ${G4_BIN} $g4_macro_file_path
-    date; sleep 2
-    time ${RTD_BIN} $g4_file_path $rtd_file_path
-    date; sleep 2
-    time root -l -b -q ''${SLIMMER}'("'$rtd_file_path'", "'$slim_file_path'")'
-    date; sleep 2
-    mv $slim_file_path $output_file_path
-    date; sleep 2
-    mv $marley_config_file_path $output_file_path
-    date; sleep 2
-    mv $g4_macro_file_path $output_file_path
-    date; sleep 2
-    rm $g4_file_path
-    date; sleep 2
-    rm $rtd_file_path
-    date; sleep 2
+        date; sleep 2
+        time python ${PY_CONFIG} --neutrino $neutrino --reaction $reaction --seed $index #>> $marley_config_file_path
+        date; sleep 2
+        # time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) --timing --th2 $th2 >> $g4_macro_file_path
+        time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) #>> $g4_macro_file_path
+        date; sleep 2
+        time ${G4_BIN} $g4_macro_file_path
+        date; sleep 2
+        time ${RTD_BIN} $g4_file_path $rtd_file_path
+        date; sleep 2
+        time root -l -b -q ''${SLIMMER}'("'$rtd_file_path'", "'$slim_file_path'")'
+        date; sleep 2
+        mv $slim_file_path $output_file_path
+        date; sleep 2
+        mv $marley_config_file_path $output_file_path
+        date; sleep 2
+        mv $g4_macro_file_path $output_file_path
+        date; sleep 2
+        rm $g4_file_path
+        date; sleep 2
+        rm $rtd_file_path
+        date; sleep 2
 
-  done
+    done
 
 done <<< "$tuple"
 
