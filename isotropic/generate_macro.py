@@ -50,6 +50,11 @@ if timing:
 # configure marley
 /Inputs/Particle_Type MARLEY
 /Inputs/MARLEY_json {}
+/Inputs/isotropic false
+/Inputs/override_vertex_position false
+/Inputs/vertex_x 1.15 m
+/Inputs/vertex_y 3.0 m
+/Inputs/vertex_z 1.8 m
 
 # configure supernova timing
 /supernova/timing/on         true
@@ -86,6 +91,11 @@ else:
 # configure marley
 /Inputs/Particle_Type MARLEY
 /Inputs/MARLEY_json {}
+/Inputs/isotropic false
+/Inputs/override_vertex_position false
+/Inputs/vertex_x 1.15 m
+/Inputs/vertex_y 3.0 m
+/Inputs/vertex_z 1.8 m
 
 # configure supernova timing
 /supernova/timing/on false
