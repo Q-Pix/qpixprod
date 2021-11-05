@@ -44,20 +44,19 @@ while read isotope decays; do
 
     echo "isotope: '$isotope', decays: '$decays'"
 
-    # index=$(printf "%06d" "${SLURM_ARRAY_TASK_ID}")
     index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
-    index=$(printf "%06d" "$index")
+    index_lz=$(printf "%06d" "$index")
 
-    g4_macro_file_name="$isotope"_g4_"$index".mac
-    g4_file_name="$isotope"_g4_"$index".root
-    rtd_file_name="$isotope"_rtd_"$index".root
-    slim_file_name="$isotope"_rtd_slim_"$index".root
+    g4_macro_file_name="$isotope"_g4_"$index_lz".mac
+    g4_file_name="$isotope"_g4_"$index_lz".root
+    rtd_file_name="$isotope"_rtd_"$index_lz".root
+    slim_file_name="$isotope"_rtd_slim_"$index_lz".root
 
     g4_macro_file_path=${G4_MACRO_DIR}/$g4_macro_file_name
     g4_file_path=${G4_OUTPUT_DIR}/$g4_file_name
     rtd_file_path=${RTD_OUTPUT_DIR}/$rtd_file_name
     slim_file_path=${SLIM_OUTPUT_DIR}/$slim_file_name
-    output_file_path=${OUTPUT_DIR}/$index
+    output_file_path=${OUTPUT_DIR}/$index_lz
 
     if [ ! -d "$output_file_path" ]; then
         mkdir -p $output_file_path
@@ -68,7 +67,7 @@ while read isotope decays; do
     fi
 
     date; sleep 2
-    time python ${PY_MACRO} $isotope $decays $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $decays + $counter`) >> $g4_macro_file_path
+    time python ${PY_MACRO} $isotope $decays $g4_file_path --seeds $index $(echo `expr $decays + $counter`) >> $g4_macro_file_path
     date; sleep 2
     time ${G4_BIN} $g4_macro_file_path
     date; sleep 2
