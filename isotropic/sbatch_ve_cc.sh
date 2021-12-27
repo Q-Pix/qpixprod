@@ -4,7 +4,7 @@
 #SBATCH -n 1                   # number of cores
 #SBATCH -N 1                   # all cores on one machine
 #SBATCH -p serial_requeue      # partition
-#SBATCH --mem 500              # memory request (Mb)
+#SBATCH --mem 1000             # memory request (Mb)
 #SBATCH -t 0-48:00             # maximum execution time (D-HH:MM)
 #SBATCH --signal=B:USR1@60     # signal handling for jobs that time out
 
@@ -27,7 +27,7 @@ if [ ! -d "${SCRATCH_DIR}" ]; then
   mkdir -p ${SCRATCH_DIR}
 fi
 
-LOG_PREFIX="${SLURM_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}"
+LOG_PREFIX="${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}"
 LOG_PATH=${LOG_DIR}/${LOG_PREFIX}
 
 PY_CONFIG=/n/home02/jh/repos/qpixprod/isotropic/generate_config.py
@@ -120,11 +120,11 @@ function main() {
 
 function signal_handler() {
   echo "Catching signal"
-  touch $SLURM_SUBMIT_DIR/job_${SLURM_JOB_ID}_caught_signal
+  touch $SLURM_SUBMIT_DIR/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}_caught_signal
   cd $SLURM_SUBMIT_DIR
-  mkdir $SLURM_JOB_ID
+  mkdir -p $SLURM_ARRAY_JOB_ID
   # cp -R $TMPDIR/* $SLURM_JOB_ID
-  cp ${LOG_PATH}.{out,err} ${SLURM_JOB_ID}
+  cp ${LOG_PATH}.{out,err} ${SLURM_ARRAY_JOB_ID}
   exit
 }
 
