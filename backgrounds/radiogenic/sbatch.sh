@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
 
-#SBATCH -J qpix_snb_bg      # A single job name for the array
+#SBATCH -J snb_bg_qpix      # A single job name for the array
 #SBATCH -n 1                # Number of cores
 #SBATCH -N 1                # All cores on one machine
 #SBATCH -p guenette         # Partition
 #SBATCH --mem 1000          # Memory request (Mb)
 #SBATCH -t 0-2:00           # Maximum execution time (D-HH:MM)
-#SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.out        # Standard output
-#SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/log/%A_%a.err        # Standard error
+#SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.out        # Standard output
+#SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.err        # Standard error
 
 offset=0
 
-SCRATCH_DIR="/n/holyscratch01/guenette_lab/Users/jh/supernova"
-STORE_DIR="/n/holystore01/LABS/guenette_lab/Lab/data/q-pix/supernova"
+SCRATCH_DIR="/n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic"
+STORE_DIR="/n/holystore01/LABS/guenette_lab/Lab/data/q-pix/supernova/production/backgrounds/radiogenic"
 G4_MACRO_DIR="${SCRATCH_DIR}/macros"
 G4_OUTPUT_DIR="${SCRATCH_DIR}/g4"
 RTD_OUTPUT_DIR="${SCRATCH_DIR}/rtd"
 SLIM_OUTPUT_DIR="${SCRATCH_DIR}/slim"
-OUTPUT_DIR="${STORE_DIR}/production"
+OUTPUT_DIR="${STORE_DIR}"
 
 PY_MACRO=/n/home02/jh/repos/qpixprod/backgrounds/radiogenic/generate_macro.py
 G4_BIN=/n/home02/jh/repos/qpixg4/build/app/G4_QPIX
 RTD_BIN=/n/home02/jh/repos/qpixrtd/EXAMPLE/build/EXAMPLE
-SLIMMER=/n/home02/jh/repos/qpixrtd/EXAMPLE/slimmer.c
+SLIMMER=/n/home02/jh/repos/qpixrtd/EXAMPLE/background_slimmer.c
 
 tuple="\
 Po210      10
