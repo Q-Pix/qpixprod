@@ -3,21 +3,41 @@
 #SBATCH -J snb_bg_qpix      # A single job name for the array
 #SBATCH -n 1                # Number of cores
 #SBATCH -N 1                # All cores on one machine
-#SBATCH -p guenette         # Partition
+#SBATCH -p serial_requeue   # Partition
 #SBATCH --mem 1000          # Memory request (Mb)
 #SBATCH -t 0-2:00           # Maximum execution time (D-HH:MM)
+#SBATCH --signal=B:USR1@60  # signal handling for jobs that time out
 #SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.out        # Standard output
 #SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.err        # Standard error
 
 offset=0
 
-SCRATCH_DIR="/n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic"
+index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
+index_lz=$(printf "%06d" "$index")
+
+# SCRATCH_DIR="/n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic"
+# STORE_DIR="/n/holystore01/LABS/guenette_lab/Lab/data/q-pix/supernova/production/backgrounds/radiogenic"
+# G4_MACRO_DIR="${SCRATCH_DIR}/macros"
+# G4_OUTPUT_DIR="${SCRATCH_DIR}/g4"
+# RTD_OUTPUT_DIR="${SCRATCH_DIR}/rtd"
+# SLIM_OUTPUT_DIR="${SCRATCH_DIR}/slim"
+# OUTPUT_DIR="${STORE_DIR}"
+
+SCRATCH_DIR="/scratch/`whoami`"
 STORE_DIR="/n/holystore01/LABS/guenette_lab/Lab/data/q-pix/supernova/production/backgrounds/radiogenic"
-G4_MACRO_DIR="${SCRATCH_DIR}/macros"
-G4_OUTPUT_DIR="${SCRATCH_DIR}/g4"
-RTD_OUTPUT_DIR="${SCRATCH_DIR}/rtd"
-SLIM_OUTPUT_DIR="${SCRATCH_DIR}/slim"
+G4_MACRO_DIR="${SCRATCH_DIR}"
+G4_OUTPUT_DIR="${SCRATCH_DIR}"
+RTD_OUTPUT_DIR="${SCRATCH_DIR}"
+SLIM_OUTPUT_DIR="${SCRATCH_DIR}"
+LOG_DIR=${SCRATCH_DIR}
 OUTPUT_DIR="${STORE_DIR}"
+
+if [ ! -d "${SCRATCH_DIR}" ]; then
+  mkdir -p ${SCRATCH_DIR}
+fi
+
+LOG_PREFIX="${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}" 
+LOG_PATH=${LOG_DIR}/${LOG_PREFIX}
 
 PY_MACRO=/n/home02/jh/repos/qpixprod/backgrounds/radiogenic/generate_macro.py
 G4_BIN=/n/home02/jh/repos/qpixg4/build/app/G4_QPIX
@@ -38,14 +58,13 @@ Ar39   707000"
 
 counter=0
 
-while read isotope decays; do
+function main() {
+
+  while read isotope decays; do
 
     let counter++
 
     echo "isotope: '$isotope', decays: '$decays'"
-
-    index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
-    index_lz=$(printf "%06d" "$index")
 
     g4_macro_file_name="$isotope"_g4_"$index_lz".mac
     g4_file_name="$isotope"_g4_"$index_lz".root
@@ -59,11 +78,11 @@ while read isotope decays; do
     output_file_path=${OUTPUT_DIR}/$index_lz
 
     if [ ! -d "$output_file_path" ]; then
-        mkdir -p $output_file_path
+      mkdir -p $output_file_path
     fi
 
     if [ -f "$g4_macro_file_path" ]; then
-        rm $g4_macro_file_path
+      rm $g4_macro_file_path
     fi
 
     date; sleep 2
@@ -84,5 +103,23 @@ while read isotope decays; do
     rm $rtd_file_path
     date; sleep 2
 
-done <<< "$tuple"
+  done <<< "$tuple"
+
+}
+
+function signal_handler() {
+  echo "Catching signal"
+  touch $SLURM_SUBMIT_DIR/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}_caught_signal
+  cd $SLURM_SUBMIT_DIR
+  mkdir -p $SLURM_ARRAY_JOB_ID
+  # cp -R $TMPDIR/* $SLURM_JOB_ID
+  cp ${LOG_PATH}.{out,err} ${SLURM_ARRAY_JOB_ID}
+  exit
+}  
+
+trap signal_handler USR1
+trap signal_handler TERM
+
+main 1> ${LOG_PATH}.out 2> ${LOG_PATH}.err &
+wait
 
