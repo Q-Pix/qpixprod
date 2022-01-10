@@ -25,7 +25,7 @@ PY_CONFIG=/n/home02/jh/repos/qpixprod/isotropic/generate_config.py
 PY_MACRO=/n/home02/jh/repos/qpixprod/isotropic/generate_macro.py
 G4_BIN=/n/home02/jh/repos/qpixg4/build/app/G4_QPIX
 RTD_BIN=/n/home02/jh/repos/qpixrtd/EXAMPLE/build/EXAMPLE
-SLIMMER=/n/home02/jh/repos/qpixrtd/EXAMPLE/slimmer.c
+SLIMMER=/n/home02/jh/repos/qpixrtd/EXAMPLE/signal_slimmer.c
 
 tuple="\
 ve     nusperbin2d_nue
@@ -67,9 +67,9 @@ while read neutrino th2; do
         slim_file_path=${SLIM_OUTPUT_DIR}/$slim_file_name
         output_file_path=${OUTPUT_DIR}/"$neutrino"_"$reaction"/$index_lz
 
-        if [ ! -d "$output_file_path" ]; then
-            mkdir -p $output_file_path
-        fi
+        # if [ ! -d "$output_file_path" ]; then
+        #     mkdir -p $output_file_path
+        # fi
 
         if [ -f "$marley_config_file_path" ]; then
             rm $marley_config_file_path
@@ -79,28 +79,28 @@ while read neutrino th2; do
             rm $g4_macro_file_path
         fi
 
-        date; sleep 2
-        time python ${PY_CONFIG} --neutrino $neutrino --reaction $reaction --seed $index #>> $marley_config_file_path
-        date; sleep 2
-        # time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) --timing --th2 $th2 >> $g4_macro_file_path
-        time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) #>> $g4_macro_file_path
-        date; sleep 2
-        time ${G4_BIN} $g4_macro_file_path
-        date; sleep 2
-        time ${RTD_BIN} $g4_file_path $rtd_file_path
-        date; sleep 2
-        time root -l -b -q ''${SLIMMER}'("'$rtd_file_path'", "'$slim_file_path'")'
-        date; sleep 2
-        mv $slim_file_path $output_file_path
-        date; sleep 2
-        mv $marley_config_file_path $output_file_path
-        date; sleep 2
-        mv $g4_macro_file_path $output_file_path
-        date; sleep 2
-        rm $g4_file_path
-        date; sleep 2
-        rm $rtd_file_path
-        date; sleep 2
+        echo date; sleep 2
+        echo time python ${PY_CONFIG} --neutrino $neutrino --reaction $reaction --seed $index #>> $marley_config_file_path
+        echo date; sleep 2
+        # echo time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) --timing --th2 $th2 >> $g4_macro_file_path
+        echo time python ${PY_MACRO} $marley_config_file_path $events $g4_file_path --seeds ${SLURM_ARRAY_TASK_ID} $(echo `expr $index + $counter`) #>> $g4_macro_file_path
+        echo date; sleep 2
+        echo time ${G4_BIN} $g4_macro_file_path
+        echo date; sleep 2
+        echo time ${RTD_BIN} $g4_file_path $rtd_file_path
+        echo date; sleep 2
+        echo time root -l -b -q ''${SLIMMER}'("'$rtd_file_path'", "'$slim_file_path'")'
+        echo date; sleep 2
+        echo mv $slim_file_path $output_file_path
+        echo date; sleep 2
+        echo mv $marley_config_file_path $output_file_path
+        echo date; sleep 2
+        echo mv $g4_macro_file_path $output_file_path
+        echo date; sleep 2
+        echo rm $g4_file_path
+        echo date; sleep 2
+        echo rm $rtd_file_path
+        echo date; sleep 2
 
     done
 

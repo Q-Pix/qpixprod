@@ -52,9 +52,6 @@ if timing:
 /Inputs/MARLEY_json {}
 /Inputs/isotropic false
 /Inputs/override_vertex_position false
-/Inputs/vertex_x 1.15 m
-/Inputs/vertex_y 3.0 m
-/Inputs/vertex_z 1.8 m
 
 # configure supernova timing
 /supernova/timing/on         true
@@ -69,6 +66,7 @@ if timing:
 /random/setSeeds {}
 
 # Supernova configs
+/Supernova/Event_Window 10 s
 /Supernova/Event_Cutoff 10 s
 
 # limit radioactive decays
@@ -78,7 +76,7 @@ if timing:
 /run/beamOn {}
 """
 
-    print(g4macro.format(marley, file_path, th2, seeds, events))
+    print(g4macro.format(marley, th2, file_path, seeds, events))
 
 else:
 
@@ -92,7 +90,7 @@ else:
 /Inputs/Particle_Type MARLEY
 /Inputs/MARLEY_json {}
 /Inputs/isotropic false
-/Inputs/override_vertex_position false
+/Inputs/override_vertex_position true
 /Inputs/vertex_x 1.15 m
 /Inputs/vertex_y 3.0 m
 /Inputs/vertex_z 1.8 m
