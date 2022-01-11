@@ -4,13 +4,14 @@
 #SBATCH -n 1                # Number of cores
 #SBATCH -N 1                # All cores on one machine
 #SBATCH -p serial_requeue   # Partition
-#SBATCH --mem 1000          # Memory request (Mb)
-#SBATCH -t 0-2:00           # Maximum execution time (D-HH:MM)
+#SBATCH --mem 1500          # Memory request (Mb)
+#SBATCH -t 0-12:00          # Maximum execution time (D-HH:MM)
 #SBATCH --signal=B:USR1@60  # signal handling for jobs that time out
 #SBATCH -o /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.out        # Standard output
 #SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.err        # Standard error
 
 offset=0
+offset=10000
 
 index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
 index_lz=$(printf "%06d" "$index")
@@ -109,9 +110,9 @@ function main() {
 
 function signal_handler() {
   echo "Catching signal"
-  touch $SLURM_SUBMIT_DIR/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}_caught_signal
   cd $SLURM_SUBMIT_DIR
   mkdir -p $SLURM_ARRAY_JOB_ID
+  touch ${SLURM_ARRAY_JOB_ID}/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}_caught_signal
   # cp -R $TMPDIR/* $SLURM_JOB_ID
   cp ${LOG_PATH}.{out,err} ${SLURM_ARRAY_JOB_ID}
   exit

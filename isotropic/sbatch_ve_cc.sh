@@ -120,13 +120,13 @@ function main() {
 
 function signal_handler() {
   echo "Catching signal"
-  touch $SLURM_SUBMIT_DIR/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}_caught_signal
   cd $SLURM_SUBMIT_DIR
   mkdir -p $SLURM_ARRAY_JOB_ID
+  touch ${SLURM_ARRAY_JOB_ID}/job_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}_caught_signal
   # cp -R $TMPDIR/* $SLURM_JOB_ID
   cp ${LOG_PATH}.{out,err} ${SLURM_ARRAY_JOB_ID}
   exit
-}
+}  
 
 trap signal_handler USR1
 trap signal_handler TERM
