@@ -3,7 +3,7 @@
 #SBATCH -J snb_bg_qpix      # A single job name for the array
 #SBATCH -n 1                # Number of cores
 #SBATCH -N 1                # All cores on one machine
-#SBATCH -p serial_requeue   # Partition
+#SBATCH -p guenette         # Partition
 #SBATCH --mem 1500          # Memory request (Mb)
 #SBATCH -t 0-12:00          # Maximum execution time (D-HH:MM)
 #SBATCH --signal=B:USR1@60  # signal handling for jobs that time out
@@ -11,7 +11,36 @@
 #SBATCH -e /n/holyscratch01/guenette_lab/Users/jh/supernova/backgrounds/radiogenic/log/%A_%a.err        # Standard error
 
 offset=0
-offset=10000
+#offset=10000
+#offset=20000
+#offset=30000
+#offset=40000
+#offset=50000
+#offset=60000
+#offset=70000
+#offset=80000
+#offset=90000
+#offset=100000
+#offset=110000
+#offset=120000
+#offset=130000
+#offset=140000
+#offset=150000
+#offset=160000
+#offset=170000
+#offset=180000
+#offset=190000
+#offset=200000
+#offset=210000
+#offset=220000
+#offset=230000
+#offset=240000
+#offset=250000
+#offset=260000
+#offset=270000
+#offset=280000
+#offset=290000
+#offset=300000
 
 index=$(echo `expr ${SLURM_ARRAY_TASK_ID} + $offset`)
 index_lz=$(printf "%06d" "$index")
@@ -76,7 +105,8 @@ function main() {
     g4_file_path=${G4_OUTPUT_DIR}/$g4_file_name
     rtd_file_path=${RTD_OUTPUT_DIR}/$rtd_file_name
     slim_file_path=${SLIM_OUTPUT_DIR}/$slim_file_name
-    output_file_path=${OUTPUT_DIR}/$index_lz
+    # output_file_path=${OUTPUT_DIR}/$index_lz
+    output_file_path=${OUTPUT_DIR}/${index_lz:0:2}/${index_lz:2:2}/${index_lz:4:2}
 
     if [ ! -d "$output_file_path" ]; then
       mkdir -p $output_file_path
