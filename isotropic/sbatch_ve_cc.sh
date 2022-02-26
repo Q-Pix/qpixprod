@@ -76,7 +76,7 @@ function main() {
       g4_file_path=${G4_OUTPUT_DIR}/$g4_file_name
       rtd_file_path=${RTD_OUTPUT_DIR}/$rtd_file_name
       slim_file_path=${SLIM_OUTPUT_DIR}/$slim_file_name
-      output_file_path=${OUTPUT_DIR}/"$neutrino"_"$reaction"/garching/$index_lz
+      output_file_path=${OUTPUT_DIR}/"$neutrino"_"$reaction"/garching/${index_lz:0:2}/${index_lz:2:2}/${index_lz:4:2}
 
       if [ ! -d "$output_file_path" ]; then
         mkdir -p $output_file_path
